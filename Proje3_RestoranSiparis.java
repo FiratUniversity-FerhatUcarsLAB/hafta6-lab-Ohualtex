@@ -19,7 +19,7 @@ public class AkilliRestoranSistemi {
     static double lastStudentDiscount = 0.0;
     static double lastOver200Discount = 0.0;
 
-    // 1) Ana yemek fiyatı
+    // 1) Ana yemek fiyatı (birim fiyat)
     public static double getMainDishPrice(int secim) {
         double fiyat;
 
@@ -44,7 +44,7 @@ public class AkilliRestoranSistemi {
         return fiyat;
     }
 
-    // 2) Başlangıç fiyatı
+    // 2) Başlangıç fiyatı (birim fiyat)
     public static double getAppetizerPrice(int secim) {
         double fiyat;
 
@@ -66,7 +66,7 @@ public class AkilliRestoranSistemi {
         return fiyat;
     }
 
-    // 3) İçecek fiyatı
+    // 3) İçecek fiyatı (birim fiyat)
     public static double getDrinkPrice(int secim) {
         double fiyat;
 
@@ -91,7 +91,7 @@ public class AkilliRestoranSistemi {
         return fiyat;
     }
 
-    // 4) Tatlı fiyatı
+    // 4) Tatlı fiyatı (birim fiyat)
     public static double getDessertPrice(int secim) {
         double fiyat;
 
@@ -124,16 +124,15 @@ public class AkilliRestoranSistemi {
     }
 
     // 7) Toplam indirimi hesapla
-    // Kurallar:
     // - Önce Combo %15
-    // - Sonra Happy Hour: içeceklerde %20
+    // - Sonra Happy Hour: içeceklerde %20 (tüm içecek toplamı)
     // - Sonra Öğrenci (hafta içi) %10
     // - Son durumda hala >200 ise ekstra %10
     public static double calculateDiscount(double tutar, boolean combo, boolean ogrenci, int saat) {
         double araToplam = tutar;
         double toplamIndirim = 0.0;
 
-        // Önce tüm indirim kayıt değişkenlerini sıfırla
+        // Kayıt değişkenlerini sıfırla
         lastComboDiscount = 0.0;
         lastHappyHourDiscount = 0.0;
         lastStudentDiscount = 0.0;
@@ -196,7 +195,8 @@ public class AkilliRestoranSistemi {
         int ogrenciSecim = input.nextInt();
         boolean ogrenci = (ogrenciSecim == 1);
 
-        // Menü seçimleri
+        // Menü seçimi
+
         System.out.println("\n--- Ana Yemekler ---");
         System.out.println("1 - Izgara Tavuk (85 TL)");
         System.out.println("2 - Adana Kebap (120 TL)");
@@ -205,6 +205,8 @@ public class AkilliRestoranSistemi {
         System.out.println("0 - Seçim yok");
         System.out.print("Ana yemek seçiminiz: ");
         int anaSecim = input.nextInt();
+        System.out.print("Ana yemek adet: ");
+        int anaAdet = input.nextInt();
 
         System.out.println("\n--- Başlangıçlar ---");
         System.out.println("1 - Çorba (25 TL)");
@@ -213,6 +215,8 @@ public class AkilliRestoranSistemi {
         System.out.println("0 - Seçim yok");
         System.out.print("Başlangıç seçiminiz: ");
         int baslangicSecim = input.nextInt();
+        System.out.print("Başlangıç adet: ");
+        int baslangicAdet = input.nextInt();
 
         System.out.println("\n--- İçecekler ---");
         System.out.println("1 - Kola (15 TL)");
@@ -222,6 +226,8 @@ public class AkilliRestoranSistemi {
         System.out.println("0 - Seçim yok");
         System.out.print("İçecek seçiminiz: ");
         int icecekSecim = input.nextInt();
+        System.out.print("İçecek adet: ");
+        int icecekAdet = input.nextInt();
 
         System.out.println("\n--- Tatlılar ---");
         System.out.println("1 - Künefe (65 TL)");
@@ -230,14 +236,22 @@ public class AkilliRestoranSistemi {
         System.out.println("0 - Seçim yok");
         System.out.print("Tatlı seçiminiz: ");
         int tatliSecim = input.nextInt();
+        System.out.print("Tatlı adet: ");
+        int tatliAdet = input.nextInt();
 
-        // Fiyatları al
-        double anaFiyat = getMainDishPrice(anaSecim);
-        double baslangicFiyat = getAppetizerPrice(baslangicSecim);
-        double icecekFiyat = getDrinkPrice(icecekSecim);
-        double tatliFiyat = getDessertPrice(tatliSecim);
+        // Birim fiyatları al
+        double anaBirim = getMainDishPrice(anaSecim);
+        double baslangicBirim = getAppetizerPrice(baslangicSecim);
+        double icecekBirim = getDrinkPrice(icecekSecim);
+        double tatliBirim = getDessertPrice(tatliSecim);
 
-        // Global içecek fiyatını set et (Happy Hour indirimi için)
+        // Adetle çarpılmış fiyatlar
+        double anaFiyat = anaBirim * anaAdet;
+        double baslangicFiyat = baslangicBirim * baslangicAdet;
+        double icecekFiyat = icecekBirim * icecekAdet;
+        double tatliFiyat = tatliBirim * tatliAdet;
+
+        // Happy Hour indirimi için toplam içecek tutarını global değişkene aktar
         drinkPriceGlobal = icecekFiyat;
 
         boolean anaVar = (anaFiyat > 0);
@@ -269,3 +283,4 @@ public class AkilliRestoranSistemi {
         input.close();
     }
 }
+
